@@ -7,7 +7,8 @@ RUN git clone https://github.com/magento/magento2.git -b 2.3.5 /repositories/mag
 RUN git clone https://github.com/magento/magento2-sample-data.git -b 2.3.5 /repositories/sample-data
 RUN php -f /repositories/sample-data/dev/tools/build-sample-data.php -- --ce-source="/repositories/magento"
 
-RUN cp -Rf /repositories/magento /var/www/html
+RUN cp -Rf /repositories/magento/* /var/www/html/.
+RUN cp -Rf /repositories/magento/*.* /var/www/html/.
 WORKDIR /var/www/html
 
 RUN composer install && a2enmod rewrite
