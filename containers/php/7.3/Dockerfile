@@ -12,7 +12,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y \
       mysql-client \
       curl \
       git \
-      zip unzip \
+      zip unzip rsync\
     && install-php-extensions \
       bcmath \
       bz2 \
