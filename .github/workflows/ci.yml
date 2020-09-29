@@ -19,12 +19,12 @@ jobs:
         id: prep
         run: |
           REPO_TAG=$(sed -E 's/(.*\/)*([[:alnum:]].*)/\2/;t;d' <<< $GITHUB_REF)
-          echo $REPO_TAG
           PACKAGE=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\1/;t;d' <<< $REPO_TAG)
-          echo $PACKAGE
           APP_NAME=${GITHUB_REPOSITORY_OWNER}/${PACKAGE}
+          echo $APP_NAME
           VERSION=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\2/;t;d' <<< $REPO_TAG)
           TAGS=${APP_NAME}:${VERSION}
+          echo ::set-output name=owner::${GITHUB_REPOSITORY_OWNER}
           echo ::set-output name=package::${PACKAGE}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
@@ -33,7 +33,7 @@ jobs:
          id: docker_build
          uses: docker/build-push-action@v1.1.1
          with:
-           username: ${{ secrets.DOCKER_USERNAME }}
+           username: ${{ steps.prep.outputs.owner }}
            password: ${{ secrets.DOCKER_PASSWORD }}
            context: .
            tags: ${{ steps.prep.outputs.tags }}
