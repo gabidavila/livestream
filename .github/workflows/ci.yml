@@ -3,6 +3,8 @@ name: Docker Images
 on:
   create:
     tags:
+      - magento-*
+      - php-*
 
 jobs:
 
@@ -25,10 +27,9 @@ jobs:
         id: prep
         run: |
           REPO_TAG=$(sed -E 's/(.*\/)*([[:alnum:]].*)/\2/;t;d' <<< $GITHUB_REF)
-          PACKAGE=$(sed -E 's/([[:alpha:]]+)-([[:alnum:]]+.*)/\1/;t;d' <<< $REPO_TAG)
+          PACKAGE=$(sed -E 's/^(\w+)-(.*)/\1/;t;d' <<< $REPO_TAG)
+          VERSION=$(sed -E 's/^(\w+)-(.*)/\2/;t;d' <<< $REPO_TAG)
           APP_NAME=${GITHUB_REPOSITORY_OWNER}/${PACKAGE}
-          echo $APP_NAME
-          VERSION=$(sed -E 's/([[:alpha:]]+)-([[:alnum:]]+.*)/\2/;t;d' <<< $REPO_TAG)
           TAGS=${APP_NAME}:${VERSION}
           echo ::set-output name=owner::${GITHUB_REPOSITORY_OWNER}
           echo ::set-output name=package::${PACKAGE}
