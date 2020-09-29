@@ -13,8 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG GCP_PROJECT_ID
-FROM gcr.io/${GCP_PROJECT_ID}/php:7.3
+FROM gabidavila/php:7.3-apache
 EXPOSE 80
 
 RUN mkdir /repositories
