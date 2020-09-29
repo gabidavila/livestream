@@ -47,7 +47,7 @@ jobs:
          with:
            tags: ${{ steps.prep.outputs.tags }}
            context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
-           file: ./Dockerfile
+           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
            push: true
       -
          name: Image digest
