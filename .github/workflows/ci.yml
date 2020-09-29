@@ -20,9 +20,12 @@ jobs:
         run: |
           REPO_TAG=${GITHUB_REF_NAME_SLUG}
           PACKAGE=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\1/;t;d' <<< $REPO_TAG)
+          DOCKER_IMAGE=gabidavila/${PACKAGE}
           VERSION=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\2/;t;d' <<< $REPO_TAG)
+          TAGS=${DOCKER_IMAGE}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
           echo ::set-output name=version::${VERSION}
+          echo ::set-output name=tags::${TAGS}
       -
          name: Build and Push
          id: docker_build
@@ -30,5 +33,6 @@ jobs:
          with:
            username: ${{ secrets.DOCKER_USERNAME }}
            password: ${{ secrets.DOCKER_PASSWORD }}
+           tags: ${{ steps.prep.outputs.tags }}
            path: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}
          
