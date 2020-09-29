@@ -22,7 +22,7 @@ jobs:
           echo $REPO_TAG
           PACKAGE=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\1/;t;d' <<< $REPO_TAG)
           echo $PACKAGE
-          APP_NAME=gabidavila/${PACKAGE}
+          APP_NAME=${GITHUB_REPOSITORY_OWNER}/${PACKAGE}
           VERSION=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\2/;t;d' <<< $REPO_TAG)
           TAGS=${APP_NAME}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
