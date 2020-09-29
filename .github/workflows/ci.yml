@@ -22,9 +22,9 @@ jobs:
           echo $REPO_TAG
           PACKAGE=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\1/;t;d' <<< $REPO_TAG)
           echo $PACKAGE
-          DOCKER_IMAGE=gabidavila/${PACKAGE}
+          APP_NAME=gabidavila/${PACKAGE}
           VERSION=$(sed -E 's/(^[a-z]+)-([0-9.]+$)/\2/;t;d' <<< $REPO_TAG)
-          TAGS=${DOCKER_IMAGE}:${VERSION}
+          TAGS=${APP_NAME}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
