@@ -45,9 +45,10 @@ jobs:
          id: docker_build
          uses: docker/build-push-action@v2
          with:
-           context: .
            tags: ${{ steps.prep.outputs.tags }}
-           path: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}
+           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
+           file: ./Dockerfile
+           push: true
       -
          name: Image digest
          run: echo ${{ steps.docker_build.outputs.digest }}
