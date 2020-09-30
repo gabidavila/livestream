@@ -24,9 +24,10 @@ if [[ $TOTAL_TABLES_STORE == "0" ]] ;  then
   php -dmemory_limit=5G bin/magento setup:upgrade 
  else
   echo "Configuring Magento"
+  php -dmemory_limit=5G /var/www/html/bin/magento module:enable --all --clear-static-content
   php -dmemory_limit=5G /var/www/html/bin/magento setup:config:set -q -n --db-host="$DB_HOST" --db-name="$DB_NAME" --db-user=magento --db-password="$DB_PASSWORD" --enable-syslog-logging=1
-  php -dmemory_limit=5G bin/magento setup:upgrade 
-  php -dmemory_limit=5G bin/magento setup:di:compile 
+  php -dmemory_limit=5G bin/magento setup:di:compile
+  php -dmemory_limit=5G bin/magento setup:upgrade
 fi
 
 cd /var/www/html && chmod -R 777 var/ pub/ generated/
