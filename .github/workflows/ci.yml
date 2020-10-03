@@ -3,8 +3,6 @@ name: Docker Images
 on:
   create:
     tags:
-      - magento\-*
-      - php\-*
 
 jobs:
 
