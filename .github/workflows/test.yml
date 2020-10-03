@@ -69,15 +69,16 @@ jobs:
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
             docker.pkg.github.com/${{ github.repository_owner }}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
+          cache-to: type=local,dest=${{ env.CACHE_PATH }}
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
           push: true
-      # - 
-      #   name: Upload Docker registry data for testing
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: docker-registry-data
-      #     path: ${{ env.REGISTRY_PATH }}/
+      - 
+        name: Upload Docker registry data for testing
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-registry-data
+          path: ${{ env.REGISTRY_PATH }}/
       - 
         name: Login to Docker Container Registry
         uses: docker/login-action@v1
