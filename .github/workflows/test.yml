@@ -68,7 +68,7 @@ jobs:
           tags: localhost:5000/${{github.repository_owner}}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
-            ghcr.io/${{ github.repository_owner }}/livestream/${{ steps.prep.outputs.package }}-${{ steps.prep.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
           push: true
@@ -85,7 +85,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - 
-        name: Build
+        name: Publish
         uses: docker/build-push-action@v2
         with:
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
