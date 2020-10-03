@@ -17,7 +17,7 @@ jobs:
         id: prep
         run: |
           REPO_TAG=$(sed -E 's/(.*\/)*([[:alnum:]].*)/\2/;t;d' <<< $GITHUB_REF)
-          PACKAGE$(sed -E 's/^(\w+)-(.*)/\1/;t;d' <<< $REPO_TAG)
+          PACKAGE=$(sed -E 's/^(\w+)-(.*)/\1/;t;d' <<< $REPO_TAG)
           VERSION=$(sed -E 's/^(\w+)-(.*)/\2/;t;d' <<< $REPO_TAG)
           GITHUB_URL_PACKAGE=docker.pkg.github.com
           APP_NAME=${{env.OWNER}}/${PACKAGE}
