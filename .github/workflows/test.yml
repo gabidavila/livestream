@@ -1,0 +1,47 @@
+name: Images for GitHub and Docker
+
+on:
+  create:
+    tags:
+
+env:
+  OWNER: ${GITHUB_REPOSITORY_OWNER}
+  REGISTRY_PATH: ${{ github.workspace }}/registry
+  CACHE_PATH: /tmp/.buildx-cache
+  REPO_TAG: $(sed -E 's/(.*\/)*([[:alnum:]].*)/\2/;t;d' <<< $GITHUB_REF)
+  PACKAGE: $(sed -E 's/^(\w+)-(.*)/\1/;t;d' <<< $REPO_TAG)
+  VERSION: $(sed -E 's/^(\w+)-(.*)/\2/;t;d' <<< $REPO_TAG)
+  GITHUB_URL_PACKAGE: docker.pkg.github.com
+  APP_NAME: ${OWNER}/${PACKAGE}
+  GH_NAME: ${GITHUB_URL_PACKAGE}/${OWNER}/livestream/${PACKAGE}
+  TAGS: ${APP_NAME}:${VERSION}
+  TAGS_GH: ${GH_NAME}:{VERSION}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+            username: ${{ env.OWNER }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Build and Push Docker
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          tags: ${{ env.TAGS }},${{env.TAGS_GH}}
+          context: ./containers/${{ env.PACKAGE }}/${{ env.VERSION }}/
+          file: ./containers/${{ env.PACKAGE }}/${{ env.VERSION }}/Dockerfile
+          push: true
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
