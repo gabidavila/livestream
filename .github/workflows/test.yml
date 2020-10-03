@@ -69,8 +69,8 @@ jobs:
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
             ghcr.io/${{ env.OWNER }}/livestream/${{ steps.prep.outputs.package }}-${{ steps.prep.outputs.version }}
-          context: ${{ env.CACHE_PATH }}/containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
-          file: ${{ env.CACHE_PATH }}/containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
+          context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
+          file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
           push: true
       -
         name: Image digest
