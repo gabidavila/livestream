@@ -72,12 +72,12 @@ jobs:
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
           push: true
-      - 
-        name: Upload Docker registry data for testing
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-registry-data
-          path: ${{ env.REGISTRY_PATH }}/
+      # - 
+      #   name: Upload Docker registry data for testing
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: docker-registry-data
+      #     path: ${{ env.REGISTRY_PATH }}/
       - 
         name: Login to Docker Container Registry
         uses: docker/login-action@v1
