@@ -16,6 +16,8 @@
 FROM gabidavila/php:7.3-apache
 EXPOSE 80
 
+LABEL org.opencontainers.image.source https://github.com/gabidavila/livestream
+
 RUN mkdir /repositories
 
 WORKDIR /var/www/html
