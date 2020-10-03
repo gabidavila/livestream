@@ -3,9 +3,10 @@ name: Images for GitHub and Docker
 on:
   create:
     tags:
+      - '*'
 
 env:
-  OWNER: ${{github.repository.owner}}
+  OWNER: gabidavila
   REGISTRY_PATH: ${{ github.workspace }}/registry
   CACHE_PATH: /tmp/.buildx-cache
 
