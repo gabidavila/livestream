@@ -21,14 +21,14 @@ jobs:
           PACKAGE=$(sed -E 's/^(\w+)-(.*)/\1/;t;d' <<< $REPO_TAG)
           VERSION=$(sed -E 's/^(\w+)-(.*)/\2/;t;d' <<< $REPO_TAG)
           GITHUB_URL_PACKAGE=docker.pkg.github.com
-          APP_NAME=${{env.OWNER}}/${PACKAGE}
-          GH_NAME=${GITHUB_URL_PACKAGE}/${{env.OWNER}}/livestream/${PACKAGE}
+          APP_NAME=${{github.repository_owner}}/${PACKAGE}
+          GH_NAME=${GITHUB_URL_PACKAGE}/${{github.repository_owner}}/livestream/${PACKAGE}
           TAGS=${APP_NAME}:${VERSION}
           TAGS_GH=${GH_NAME}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=tags::${TAGS_GH}
+          echo ::set-output name=tags_gh::${TAGS_GH}
         shell: bash
       - 
         name: Checkout repository
@@ -53,32 +53,47 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+      - 
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_TOKEN }}
       -
-      #   name: Login to DockerHub
-      #   uses: docker/login-action@v1 
-      #   with:
-      #       username: ${{ env.OWNER }}
-      #       password: ${{ secrets.DOCKER_PASSWORD }}
-      # -
         name: Build and Push Locally
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          # tags: ${{ steps.prep.outputs.TAGS }}
-          # tags: ${{ steps.prep.outputs.TAGS }},${{steps.prep.outputs.TAGS_GH}}
-          tags: localhost:5000/${{env.OWNER}}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
+          tags: localhost:5000/${{github.repository_owner}}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
-            ghcr.io/${{ env.OWNER }}/livestream/${{ steps.prep.outputs.package }}-${{ steps.prep.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/livestream/${{ steps.prep.outputs.package }}-${{ steps.prep.outputs.version }}
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
           push: true
-      -
-        name: Stop Docker registry
-        run: docker stop registry
       - 
         name: Upload Docker registry data for testing
         uses: actions/upload-artifact@v2
         with:
           name: docker-registry-data
           path: ${{ env.REGISTRY_PATH }}/
+      - 
+        name: Login to Docker Container Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - 
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
+          file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
+          cache-from: type=local,src=${{ env.CACHE_PATH }}
+          cache-to: type=local,dest=${{ env.CACHE_PATH }}
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}, ${{ steps.prep.outputs.tags_gh}}
+      -
+        name: Stop Docker registry
+        run: docker stop registry
