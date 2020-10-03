@@ -24,7 +24,7 @@ jobs:
           APP_NAME=${{env.OWNER}}/${PACKAGE}
           GH_NAME=${GITHUB_URL_PACKAGE}/${{env.OWNER}}/livestream/${PACKAGE}
           TAGS=${APP_NAME}:${VERSION}
-          TAGS_GH=${GH_NAME}:{VERSION}
+          TAGS_GH=${GH_NAME}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
@@ -61,7 +61,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: ${{ steps.prep.outputs.TAGS }},${{steps.prep.outputs.TAGS_GH}}
+          tags: ${{ steps.prep.outputs.TAGS }}
+          # tags: ${{ steps.prep.outputs.TAGS }},${{steps.prep.outputs.TAGS_GH}}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
             ghcr.io/${{ env.OWNER }}/livestream/${{ steps.prep.outputs.package }}-${{ steps.prep.outputs.version }}
