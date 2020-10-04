@@ -5,6 +5,6 @@
 
 ## Tagging Convention
 
-Use `{name-of-software-or-image}-{full-version}
+Use `{name-of-software-or-image}-{full-version}`
 
 Example: PHP would be `php-7.3-apache` or `php-7.3-nginx` for instance
