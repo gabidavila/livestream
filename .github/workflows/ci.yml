@@ -6,7 +6,6 @@ on:
       - '*'
 
 env:
-  OWNER: gabidavila
   REGISTRY_PATH: ${{ github.workspace }}/registry
   CACHE_PATH: /tmp/.buildx-cache
 
