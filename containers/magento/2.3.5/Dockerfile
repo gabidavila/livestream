@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gabidavila/php:7.3-apache
+FROM ghcr.io/gabidavila/livestream/php:7.3-apache
 EXPOSE 80
 
 LABEL org.opencontainers.image.source https://github.com/gabidavila/livestream
