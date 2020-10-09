@@ -40,7 +40,7 @@ jobs:
 
           for registry in "${CONTAINER_REGISTRY[@]}"
           do
-            if [[ "${registry}"  == "docker.io/"]]; then
+            if [[ "${registry}"  == "docker.io/" ]] ; then
               APP_NAME=${{github.repository_owner}}/${PACKAGE}
             fi
             
