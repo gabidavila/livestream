@@ -44,7 +44,7 @@ jobs:
               APP_NAME=${{github.repository_owner}}/${PACKAGE}
             fi
             
-            TAGS="$registry$APP_NAME,$TAGS"
+            TAGS="$registry$APP_NAME:${VERSION},$TAGS"
           done
 
           echo ::set-output name=package::${PACKAGE}
@@ -92,7 +92,7 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
-            ${{ steps.prep.outputs.tags_gh}}
+            ${{ steps.prep.outputs.tags}}
           cache-to: type=local,dest=${{ env.CACHE_PATH }}
           context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
           file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
