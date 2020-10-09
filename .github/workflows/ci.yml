@@ -70,12 +70,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
+      - 
+        name: Login to Docker Container Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       -
         name: Build and Push Locally
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: localhost:5000/${{github.repository_owner}}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
+          tags: localhost:5000/${{github.repository_owner}}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}, ${{ steps.prep.outputs.tags }}, ${{ steps.prep.outputs.tags_gh}}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
             ghcr.io/${{ github.repository_owner }}/livestream/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}
@@ -89,22 +95,6 @@ jobs:
         with:
           name: docker-registry-data
           path: ${{ env.REGISTRY_PATH }}/
-      - 
-        name: Login to Docker Container Registry
-        uses: docker/login-action@v1
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - 
-        name: Publish
-        uses: docker/build-push-action@v2
-        with:
-          context: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/
-          file: ./containers/${{ steps.prep.outputs.package }}/${{ steps.prep.outputs.version }}/Dockerfile
-          cache-from: type=local,src=${{ env.CACHE_PATH }}
-          cache-to: type=local,dest=${{ env.CACHE_PATH }}
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}, ${{ steps.prep.outputs.tags_gh}}
       -
         name: Stop Docker registry
         run: docker stop registry
