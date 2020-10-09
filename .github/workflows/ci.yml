@@ -35,7 +35,7 @@ jobs:
           VERSION=$(sed -E 's/^(\w+)-(.*)/\2/;t;d' <<< $REPO_TAG)
           GITHUB_URL_PACKAGE=ghcr.io
           APP_NAME=${{github.repository_owner}}/${PACKAGE}
-          GH_NAME=${GITHUB_URL_PACKAGE}/${{github.repository_owner}}/${{github.repository_info.name}}/${PACKAGE}
+          GH_NAME=${GITHUB_URL_PACKAGE}/${{github.repository}}/${PACKAGE}
           TAGS=${APP_NAME}:${VERSION}
           TAGS_GH=${GH_NAME}:${VERSION}
           echo ::set-output name=package::${PACKAGE}
@@ -82,7 +82,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          tags: localhost:5000/${{github.repository_owner}}/${{github.repository_info.name}}/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}, ${{ steps.prep.outputs.tags }}, ${{ steps.prep.outputs.tags_gh}}
+          tags: localhost:5000/${{github.repository}}/${{ steps.prep.outputs.package }}:${{ steps.prep.outputs.version }}, ${{ steps.prep.outputs.tags }}, ${{ steps.prep.outputs.tags_gh}}
           cache-from: |
             type=local,src=${{ env.CACHE_PATH }}
             ${{ steps.prep.outputs.tags_gh}}
